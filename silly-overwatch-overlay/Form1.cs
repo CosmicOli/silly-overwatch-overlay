@@ -1,14 +1,8 @@
 using silly_overwatch_overlay.Properties;
+using System.Drawing.Imaging;
 
 namespace silly_overwatch_overlay
 {
-    // Presumably want to generate picture boxes on demand to play a gif then close
-
-    // Either want to subscribe to a global timer or a local timer for each gif box
-
-    // May want a custom class to handle gif boxes
-
-
     public partial class Form1 : Form
     {
         protected override CreateParams CreateParams
@@ -24,6 +18,7 @@ namespace silly_overwatch_overlay
             }
         }
 
+        GifBox bloodSplatter;
         public Form1()
         {
             InitializeComponent();
@@ -34,36 +29,67 @@ namespace silly_overwatch_overlay
 
             TopMost = true;
 
-            //Opacity = 0.5f;
-
             this.BackColor = Color.LimeGreen;
             this.TransparencyKey = Color.LimeGreen;
 
-            //CreateGif(Image.FromFile("1.png"), new Point(0, 0), 1f);
-            GifBox test = new GifBox(this, GlobalTimer, Image.FromFile("1.png"), new Point(0, 0), 1000);
+            //new GifBox(this, GlobalTimer, Image.FromFile("1.gif"), new Point(0, 0), 1000);
+
+            bloodSplatter = new GifBox(this, GlobalTimer);
+
+            GlobalTimer.Tick += CheckForKill;
         }
 
-        public void CreateGif(Image gif, Point position, int duration)
+        //        int referenceR = 255;
+        //        int referenceG = 255;
+        //        int referenceB = 255;
+        public void CheckForKill(object sender, EventArgs e)
         {
-            SuspendLayout();
+            // The kill skull is roughly a square (I measured it being 61x64 pixels on a 2560x1440 display)
+            // The skull originates around the centre of the screen
 
-            PictureBox pictureBox = new PictureBox();
+            int width = 61;
+            int height = 64;
+            int topLeft = this.Bounds.Width / 2 - width / 2;
+            int topRight = this.Bounds.Height / 2 - height / 2;
 
-            pictureBox.Image = gif;
-            pictureBox.Location = position;
-            pictureBox.Name = "GifBox";
-            pictureBox.Size = gif.Size;
-            pictureBox.TabIndex = 0;
-            pictureBox.TabStop = false;
+            Rectangle bounds = new Rectangle(topLeft, topRight, width, height);
 
-            Controls.Add(pictureBox);
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+            {
+                using (Graphics graphics = Graphics.FromImage(bitmap))
+                {
+                    graphics.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+                }
+                //bitmap.Save("test.jpeg", ImageFormat.Jpeg);
 
-            ResumeLayout(false);
+                int count = 0;
+                for (int x = 0; x < bounds.Width; x++)
+                {
+                    for (int y = 0; y < bounds.Height; y++)
+                    {
+                        Color pixel = bitmap.GetPixel(x, y);
+                        int r = pixel.R;
+                        int g = pixel.G;
+                        int b = pixel.B;
+
+                        //if (Within10Percent(referenceR, r) && Within10Percent(referenceG, g) && Within10Percent(referenceB, b))
+                        if (Within10Percent(255, r) && (!Within10Percent(255, g) || !Within10Percent(255, b)))
+                        {
+                            count++;
+                        }
+                    }
+                }
+
+                if (count >= width * height * 0.8)
+                {
+                    bloodSplatter.PlayGif(Image.FromFile("1.gif"), new Point(0, 0), 1000);
+                }
+            }
         }
 
-        private void GlobalTimer_Tick(object sender, EventArgs e)
+        public bool Within10Percent(int reference, int value)
         {
-            Console.WriteLine("Test");
+            return Math.Abs((double) (value - reference) / reference) <= 0.1;
         }
     }
 }

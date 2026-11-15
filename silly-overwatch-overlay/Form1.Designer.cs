@@ -35,7 +35,6 @@
             // GlobalTimer
             // 
             GlobalTimer.Enabled = true;
-            GlobalTimer.Tick += GlobalTimer_Tick;
             // 
             // Form1
             // 
