@@ -29,18 +29,25 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            GlobalTimer = new System.Windows.Forms.Timer(components);
+            KillTimer = new System.Windows.Forms.Timer(components);
+            SplatterTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
-            // GlobalTimer
+            // KillTimer
             // 
-            GlobalTimer.Enabled = true;
+            KillTimer.Enabled = true;
+            // 
+            // SplatterTimer
+            // 
+            SplatterTimer.Enabled = true;
+            SplatterTimer.Interval = 10;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(12F, 30F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(467, 225);
+            Margin = new Padding(2, 2, 2, 2);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
@@ -48,6 +55,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer GlobalTimer;
+        private System.Windows.Forms.Timer KillTimer;
+        private System.Windows.Forms.Timer SplatterTimer;
     }
 }

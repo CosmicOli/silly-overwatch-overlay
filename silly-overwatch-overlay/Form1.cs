@@ -18,7 +18,7 @@ namespace silly_overwatch_overlay
             }
         }
 
-        GifBox bloodSplatter;
+        BloodSplatter bloodSplatter;
         public Form1()
         {
             InitializeComponent();
@@ -32,16 +32,14 @@ namespace silly_overwatch_overlay
             this.BackColor = Color.LimeGreen;
             this.TransparencyKey = Color.LimeGreen;
 
-            //new GifBox(this, GlobalTimer, Image.FromFile("1.gif"), new Point(0, 0), 1000);
+            //bloodSplatter = new GifBox(this, GlobalTimer);
+            bloodSplatter = new BloodSplatter(this, SplatterTimer);
 
-            bloodSplatter = new GifBox(this, GlobalTimer);
+            KillTimer.Tick += CheckForKill;
 
-            GlobalTimer.Tick += CheckForKill;
+            //bloodSplatter.SplatterBlood();
         }
 
-        //        int referenceR = 255;
-        //        int referenceG = 255;
-        //        int referenceB = 255;
         public void CheckForKill(object sender, EventArgs e)
         {
             // The kill skull is roughly a square (I measured it being 61x64 pixels on a 2560x1440 display)
@@ -82,7 +80,8 @@ namespace silly_overwatch_overlay
 
                 if (count >= width * height * 0.8)
                 {
-                    bloodSplatter.PlayGif(Image.FromFile("1.gif"), new Point(0, 0), 1000);
+                    //bloodSplatter.PlayGif(Image.FromFile("1.gif"), new Point(0, 0), 1000);
+                    bloodSplatter.SplatterBlood();
                 }
             }
         }
