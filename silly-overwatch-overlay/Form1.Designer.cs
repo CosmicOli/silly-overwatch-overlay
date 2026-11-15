@@ -29,11 +29,26 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            GlobalTimer = new System.Windows.Forms.Timer(components);
+            SuspendLayout();
+            // 
+            // GlobalTimer
+            // 
+            GlobalTimer.Enabled = true;
+            GlobalTimer.Tick += GlobalTimer_Tick;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Name = "Form1";
             Text = "Form1";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private System.Windows.Forms.Timer GlobalTimer;
     }
 }
