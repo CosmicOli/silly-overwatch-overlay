@@ -6,13 +6,14 @@ namespace silly_overwatch_overlay
 {
     internal class GifBox// : IDisposable
     {
-        Form parentForm;
-        PictureBox pictureBox;
+        Form1 parentForm;
+        public PictureBox pictureBox;
         int TTL;
         System.Windows.Forms.Timer globalTimer;
 
         private void IncrementTTL(object sender, EventArgs e)
         {
+            //parentForm.playingGif = true;
             TTL -= ((System.Windows.Forms.Timer) sender).Interval;
 
             //pictureBox.Location = new System.Drawing.Point(pictureBox.Location.X + 10, pictureBox.Location.Y + 10);
@@ -27,11 +28,14 @@ namespace silly_overwatch_overlay
                 parentForm.ResumeLayout(false);
 
                 TTL = 0;
+
+                //parentForm.playingGif = false;
             }
 
         }
 
-        public GifBox(Form parentForm, System.Windows.Forms.Timer globalTimer)
+        bool setup = false;
+        public GifBox(Image gif, Point position, Form1 parentForm, System.Windows.Forms.Timer globalTimer)
         {
             this.parentForm = parentForm;
 
@@ -39,51 +43,36 @@ namespace silly_overwatch_overlay
 
             pictureBox = new PictureBox
             {
+                Image = gif,
+                Size = gif.Size,
+                Location = position,
                 Name = "GifBox",
                 TabIndex = 0,
                 TabStop = false
             };
+
+            setup = true;
         }
 
-        public void PlayGif(Image gif, Point position, int duration)
+        public void PlayGif(int duration)
         {
-            /*if (TTL != 0)
+            //this.gif = gif;
+
+            if (TTL != 0 || !setup)
             {
                 return;
-            }*/
+            }
+
+            pictureBox.Refresh();
 
             this.parentForm.SuspendLayout();
 
             TTL = duration;
             globalTimer.Tick += IncrementTTL;
 
-            if (pictureBox.Image != null)
-            {
-                pictureBox.Image.Dispose();
-            }
-
-            pictureBox.Image = gif;
-            pictureBox.Location = position;
-            pictureBox.Size = gif.Size;
-
             this.parentForm.Controls.Add(pictureBox);
 
             this.parentForm.ResumeLayout(false);
         }
-        
-        /*public void Dispose()
-        {
-            TTL = 0;
-
-            parentForm = new Form();
-            parentForm.Dispose();
-
-            pictureBox = new PictureBox();
-            pictureBox.Dispose();
-
-            globalTimer = new System.Windows.Forms.Timer();
-            globalTimer.Dispose();
-        }*/
-
     }
 }
