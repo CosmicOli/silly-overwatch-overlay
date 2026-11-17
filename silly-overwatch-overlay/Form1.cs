@@ -18,9 +18,17 @@ namespace silly_overwatch_overlay
             }
         }
 
-        //BloodSplatter bloodSplatter;
         GifBox bloodSplatter;
-        Image gif = Image.FromFile("1.gif");
+        Image[] gifs = [Image.FromFile("blood-1.gif"), Image.FromFile("blood-2.gif")];
+
+        Image randomGif
+        {
+            get
+            {
+                return gifs[(new Random()).Next(0, 2)];
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -34,7 +42,7 @@ namespace silly_overwatch_overlay
             this.BackColor = Color.LimeGreen;
             this.TransparencyKey = Color.LimeGreen;
 
-            bloodSplatter = new GifBox(gif, new Point(0, 0), this, KillTimer);
+            bloodSplatter = new GifBox(this, KillTimer);
 
             KillTimer.Tick += CheckForKill;
         }
@@ -69,7 +77,6 @@ namespace silly_overwatch_overlay
                         int g = pixel.G;
                         int b = pixel.B;
 
-                        //if (Within10Percent(referenceR, r) && Within10Percent(referenceG, g) && Within10Percent(referenceB, b))
                         if (Within10Percent(255, r) && (!Within10Percent(255, g) || !Within10Percent(255, b)))
                         {
                             count++;
@@ -79,7 +86,16 @@ namespace silly_overwatch_overlay
 
                 if (count >= width * height * 0.8)
                 {
-                    bloodSplatter.PlayGif(1000);
+                    Random randomGenerator = new Random();
+
+                    int screenWidth = 2560;
+                    int screenHeight = 1440;
+
+                    Image newGif = randomGif;
+
+                    int randomX = randomGenerator.Next(0, screenWidth + 1 - newGif.Size.Width);
+
+                    bloodSplatter.PlayGif(newGif, new Point(randomX, screenHeight - newGif.Size.Height), 3000);
                 }
             }
         }

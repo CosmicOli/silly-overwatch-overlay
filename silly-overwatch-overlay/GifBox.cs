@@ -35,7 +35,7 @@ namespace silly_overwatch_overlay
         }
 
         bool setup = false;
-        public GifBox(Image gif, Point position, Form1 parentForm, System.Windows.Forms.Timer globalTimer)
+        public GifBox(Form1 parentForm, System.Windows.Forms.Timer globalTimer)
         {
             this.parentForm = parentForm;
 
@@ -43,10 +43,9 @@ namespace silly_overwatch_overlay
 
             pictureBox = new PictureBox
             {
-                Image = gif,
-                Size = gif.Size,
-                Location = position,
+                Location = new Point(0, 0),
                 Name = "GifBox",
+                //SizeMode = PictureBoxSizeMode.Zoom,
                 TabIndex = 0,
                 TabStop = false
             };
@@ -54,7 +53,7 @@ namespace silly_overwatch_overlay
             setup = true;
         }
 
-        public void PlayGif(int duration)
+        public void PlayGif(Image gif, Point position, int duration)
         {
             //this.gif = gif;
 
@@ -66,6 +65,12 @@ namespace silly_overwatch_overlay
             pictureBox.Refresh();
 
             this.parentForm.SuspendLayout();
+
+            pictureBox.Image = gif;
+            //pictureBox.Size = new Size(1000, 1000);
+            pictureBox.Size = gif.Size;
+
+            pictureBox.Location = position;
 
             TTL = duration;
             globalTimer.Tick += IncrementTTL;
