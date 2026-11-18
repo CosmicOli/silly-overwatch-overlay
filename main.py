@@ -146,12 +146,6 @@ def loop():
 
 while (True):
     loop()
-
-
-
-#print(QApplication.primaryScreen().geometry().width() // 2 - width // 2)
-#print(QApplication.primaryScreen().geometry().height() // 2 - height // 2)
-#print(QApplication.primaryScreen().geometry().width())
     
 
 
