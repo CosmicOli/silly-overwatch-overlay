@@ -428,5 +428,13 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Stuff I added lol
 *.gif
 *.mp3
+python/Lib/site-packages/*
+!python/Lib/site-packages/pip/
+!python/Lib/site-packages/pip-26.3.dist-info/
+python/Scripts/*
+python/Scripts/pip.exe
+python/Scripts/pip3.12.exe
+python/Scripts/pip3.exe
