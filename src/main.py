@@ -1,6 +1,7 @@
 from collections import deque
 import os
 import random
+import re
 import sys
 
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
@@ -11,8 +12,21 @@ from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PIL import Image
 from mss import mss
 
-gifsDirectory = "./assets/blood/gifs/"
-audiosDirectory = "./assets/blood/audios/"
+settingsDirectory = "./settings.txt"
+
+settingsFile = open(settingsDirectory, "r")
+settings = settingsFile.read()
+
+gifsDirectoryPath = re.search("blood splatter gifs directory: ?(.*)", settings).group(1)
+audiosDirectoryPath = re.search("blood splatter audios directory: ?(.*)", settings).group(1)
+
+backgroundGifPath = re.search("background gif: ?(.*)", settings).group(1)
+musicPath = re.search("music gif: ?(.*)", settings).group(1)
+
+splatterVolume = float(re.search("blood splatter audio volume: ?(.*)", settings).group(1)) / 100
+musicVolume = float(re.search("music audio volume: ?(.*)", settings).group(1)) / 100
+
+enableBackground = re.search("enable background gif: ?(.*)", settings).group(1).lower() == "true"
 
 class Window(QWidget):
     def __init__(self):
@@ -43,17 +57,18 @@ class Window(QWidget):
 
         self.tetoPlayer = QMediaPlayer()
         self.tetoAudio = QAudioOutput()
-        self.tetoAudio.setVolume(0.4) # ehhh seems like decent audio balancing ig
+        self.tetoAudio.setVolume(musicVolume)
         self.tetoPlayer.setAudioOutput(self.tetoAudio)
-        self.tetoPlayer.setSource("./assets/teto.mp3")
+        self.tetoPlayer.setSource(musicPath)
         self.tetoPlayer.setLoops(QMediaPlayer.Loops.Infinite)
         self.tetoPlayer.play()
 
-        self.starLabel = QLabel(self)
-        self.starMovie = QMovie("./assets/star.gif")
-        self.starMovie.setScaledSize(QSize(screenWidth, screenHeight))
-        self.starLabel.setMovie(self.starMovie)
-        self.starMovie.start()
+        if (enableBackground):
+            self.starLabel = QLabel(self)
+            self.starMovie = QMovie(backgroundGifPath)
+            self.starMovie.setScaledSize(QSize(screenWidth, screenHeight))
+            self.starLabel.setMovie(self.starMovie)
+            self.starMovie.start()
 
     def unlockKillDelay(self):
         self.killDelayActive = False
@@ -77,8 +92,10 @@ class Window(QWidget):
             self.killDelayActive = True
             self.killDelayTimer.singleShot(500, self.unlockKillDelay)
 
-            player = QMediaPlayer()
             audio = QAudioOutput()
+            player = QMediaPlayer()
+
+            audio.setVolume(splatterVolume)
             player.setAudioOutput(audio)
             player.setSource(audioPath)
             player.play()
@@ -125,9 +142,9 @@ def loop():
     if (count >= width * height * 0.6):
         window.hide()
 
-        gifDirectory = gifsDirectory + random.choice(os.listdir(gifsDirectory))
+        gifDirectory = gifsDirectoryPath + random.choice(os.listdir(gifsDirectoryPath))
 
-        audioDirectory = audiosDirectory + random.choice(os.listdir(audiosDirectory))
+        audioDirectory = audiosDirectoryPath + random.choice(os.listdir(audiosDirectoryPath))
 
         window.playSplatter(gifDirectory, audioDirectory)
         window.show()

@@ -1,0 +1,12 @@
+# a path; note that ./ refers to the main project directory
+blood splatter gifs directory: ./assets/blood/gifs/
+blood splatter audios directory: ./assets/blood/audios/
+background gif: ./assets/star.gif
+music gif: ./assets/teto.mp3
+
+# number from 0 to 100
+blood splatter audio volume: 100
+music audio volume: 40
+
+# true or false
+enable background gif: true
