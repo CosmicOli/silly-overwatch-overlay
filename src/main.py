@@ -1,14 +1,18 @@
+from collections import deque
+import os
+import random
 import sys
+
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
 from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6.QtGui import QMovie
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 
 from PIL import Image
-
 from mss import mss
-import random
-from collections import deque
+
+gifsDirectory = "./bin/blood/gifs/"
+audiosDirectory = "./bin/blood/audios/"
 
 class Window(QWidget):
     def __init__(self):
@@ -90,7 +94,7 @@ class Window(QWidget):
 
             randomX = random.randint(0, screenWidth - newWidth)
             label.move(randomX, 0)
-            
+
             movie.start()
 
             self.splatters.append((label, movie, player, audio))
@@ -121,7 +125,11 @@ def loop():
     if (count >= width * height * 0.6):
         window.hide()
 
-        window.playSplatter("./bin/blood/gifs/overlay.gif", "./bin/blood/mp3s/splatter.mp3")
+        gifDirectory = gifsDirectory + random.choice(os.listdir(gifsDirectory))
+
+        audioDirectory = audiosDirectory + random.choice(os.listdir(audiosDirectory))
+
+        window.playSplatter(gifDirectory, audioDirectory)
         window.show()
 
 
