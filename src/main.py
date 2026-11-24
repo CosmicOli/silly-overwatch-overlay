@@ -25,7 +25,7 @@ class Window(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
 
-        self.gifs = deque()
+        self.splatters = deque()
 
         screen = QApplication.primaryScreen().geometry()
         self.setGeometry(screen)
@@ -36,11 +36,6 @@ class Window(QWidget):
         self.loopTimer = QTimer(self)
         self.loopTimer.timeout.connect(loop)
         self.loopTimer.start(100)
-
-        self.splatterPlayer = QMediaPlayer()
-        self.splatterAudio = QAudioOutput()
-        self.splatterPlayer.setAudioOutput(self.splatterAudio)
-        self.splatterPlayer.setSource("./bin/blood/mp3s/splatter.mp3")
 
         self.tetoPlayer = QMediaPlayer()
         self.tetoAudio = QAudioOutput()
@@ -60,40 +55,45 @@ class Window(QWidget):
         self.killDelayActive = False
 
     def endGif(self, frameNumber):
-        label, movie = self.gifs[0]
+        label, movie, player, audio = self.splatters[0]
 
         if (frameNumber == movie.frameCount() - 1):
-            label, movie = self.gifs.popleft()
+            label, movie, player, audio = self.splatters.popleft()
 
             movie.frameChanged.disconnect(self.endGif)
+            player.stop()
 
             label.deleteLater()
             movie.deleteLater()
+            player.deleteLater()
+            audio.deleteLater()
 
-    def playSplatter(self, gifPath):
+    def playSplatter(self, gifPath, audioPath):
         if (not self.killDelayActive):
             self.killDelayActive = True
             self.killDelayTimer.singleShot(500, self.unlockKillDelay)
 
-            self.splatterPlayer.stop()
-            self.splatterPlayer.play()
-
-            gif = Image.open(gifPath)
+            player = QMediaPlayer()
+            audio = QAudioOutput()
+            player.setAudioOutput(audio)
+            player.setSource(audioPath)
+            player.play()
 
             label = QLabel(self)
             movie = QMovie(gifPath)
-
+            
+            gif = Image.open(gifPath)
             newWidth = int(gif.width * (screenHeight / gif.height))
             movie.setScaledSize(QSize(newWidth, screenHeight))
 
             label.setMovie(movie)
 
             randomX = random.randint(0, screenWidth - newWidth)
-
             label.move(randomX, 0)
+            
             movie.start()
 
-            self.gifs.append((label, movie))
+            self.splatters.append((label, movie, player, audio))
 
             movie.frameChanged.connect(self.endGif)
 
@@ -121,7 +121,7 @@ def loop():
     if (count >= width * height * 0.6):
         window.hide()
 
-        window.playSplatter("./bin/blood/gifs/overlay.gif")
+        window.playSplatter("./bin/blood/gifs/overlay.gif", "./bin/blood/mp3s/splatter.mp3")
         window.show()
 
 
