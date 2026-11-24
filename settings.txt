@@ -5,8 +5,8 @@ background gif: ./assets/star.gif
 music gif: ./assets/teto.mp3
 
 # number from 0 to 100
-blood splatter audio volume: 100
-music audio volume: 40
+blood splatter audio volume: 50
+music audio volume: 50
 
 # true or false
 enable background gif: true
