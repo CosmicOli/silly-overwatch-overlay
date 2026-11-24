@@ -1,3 +1,4 @@
+cd ../
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "mss" -y
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "PyQt6" -y
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "PyQt6-sip" -y
