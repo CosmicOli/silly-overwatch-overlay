@@ -11,8 +11,8 @@ from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PIL import Image
 from mss import mss
 
-gifsDirectory = "./bin/blood/gifs/"
-audiosDirectory = "./bin/blood/audios/"
+gifsDirectory = "./assets/blood/gifs/"
+audiosDirectory = "./assets/blood/audios/"
 
 class Window(QWidget):
     def __init__(self):
@@ -45,12 +45,12 @@ class Window(QWidget):
         self.tetoAudio = QAudioOutput()
         self.tetoAudio.setVolume(0.4) # ehhh seems like decent audio balancing ig
         self.tetoPlayer.setAudioOutput(self.tetoAudio)
-        self.tetoPlayer.setSource("./bin/teto.mp3")
+        self.tetoPlayer.setSource("./assets/teto.mp3")
         self.tetoPlayer.setLoops(QMediaPlayer.Loops.Infinite)
         self.tetoPlayer.play()
 
         self.starLabel = QLabel(self)
-        self.starMovie = QMovie("./bin/star.gif")
+        self.starMovie = QMovie("./assets/star.gif")
         self.starMovie.setScaledSize(QSize(screenWidth, screenHeight))
         self.starLabel.setMovie(self.starMovie)
         self.starMovie.start()
