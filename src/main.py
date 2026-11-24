@@ -121,8 +121,8 @@ class Window(QWidget):
 
 MSS = mss()
 
-def Within10Percent(reference, value):
-    return abs((reference - value) / reference) <= 0.1
+def WithinPercent(reference, value, percent):
+    return abs((reference - value) / reference) <= percent / 100
 
 def loop():
     screenshot = MSS.grab(boundingBox)
@@ -136,7 +136,7 @@ def loop():
             g = pixel[1]
             b = pixel[2]
 
-            if (Within10Percent(255, r) and (not Within10Percent(255, g) or not Within10Percent(255, b))):
+            if (WithinPercent(255, r, 10) and (not WithinPercent(255, g, 40) or not WithinPercent(255, b, 25))):
                 count += 1
 
     if (count >= width * height * 0.6):
