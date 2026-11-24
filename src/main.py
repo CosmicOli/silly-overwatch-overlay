@@ -4,6 +4,8 @@ from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6.QtGui import QMovie
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 
+from PIL import Image
+
 from mss import mss
 import random
 from collections import deque
@@ -38,18 +40,18 @@ class Window(QWidget):
         self.splatterPlayer = QMediaPlayer()
         self.splatterAudio = QAudioOutput()
         self.splatterPlayer.setAudioOutput(self.splatterAudio)
-        self.splatterPlayer.setSource("./src/splatter.mp3")
+        self.splatterPlayer.setSource("./bin/blood/mp3s/splatter.mp3")
 
         self.tetoPlayer = QMediaPlayer()
         self.tetoAudio = QAudioOutput()
         self.tetoAudio.setVolume(0.4) # ehhh seems like decent audio balancing ig
         self.tetoPlayer.setAudioOutput(self.tetoAudio)
-        self.tetoPlayer.setSource("./src/teto.mp3")
+        self.tetoPlayer.setSource("./bin/teto.mp3")
         self.tetoPlayer.setLoops(QMediaPlayer.Loops.Infinite)
         self.tetoPlayer.play()
 
         self.starLabel = QLabel(self)
-        self.starMovie = QMovie("./src/star.gif")
+        self.starMovie = QMovie("./bin/star.gif")
         self.starMovie.setScaledSize(QSize(screenWidth, screenHeight))
         self.starLabel.setMovie(self.starMovie)
         self.starMovie.start()
@@ -68,7 +70,7 @@ class Window(QWidget):
             label.deleteLater()
             movie.deleteLater()
 
-    def playSplatter(self, path, x, y):
+    def playSplatter(self, gifPath):
         if (not self.killDelayActive):
             self.killDelayActive = True
             self.killDelayTimer.singleShot(500, self.unlockKillDelay)
@@ -76,12 +78,19 @@ class Window(QWidget):
             self.splatterPlayer.stop()
             self.splatterPlayer.play()
 
+            gif = Image.open(gifPath)
+
             label = QLabel(self)
-            movie = QMovie(path)
+            movie = QMovie(gifPath)
+
+            newWidth = int(gif.width * (screenHeight / gif.height))
+            movie.setScaledSize(QSize(newWidth, screenHeight))
 
             label.setMovie(movie)
 
-            label.move(x, y)
+            randomX = random.randint(0, screenWidth - newWidth)
+
+            label.move(randomX, 0)
             movie.start()
 
             self.gifs.append((label, movie))
@@ -112,12 +121,7 @@ def loop():
     if (count >= width * height * 0.6):
         window.hide()
 
-        gifWidth = 1008
-        gifHeight = 1800
-
-        randomX = random.randint(0, screenWidth - gifWidth)
-
-        window.playSplatter("./src/overlay.gif", randomX, screenHeight - gifHeight)
+        window.playSplatter("./bin/blood/gifs/overlay.gif")
         window.show()
 
 

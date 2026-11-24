@@ -8,5 +8,6 @@
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "PySide6_WebEngine" -y
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "PySide6_Pdf" -y
 "./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "shiboken6" -y
+"./python/python.exe" "./python/Scripts/pip.exe" "uninstall" "pillow" -y
 "./python/python.exe" "./python/Scripts/pip.exe" "cache" "purge"
 pause
